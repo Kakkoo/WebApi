@@ -28,17 +28,36 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+			services.AddSwaggerGen(c =>
+			{
+				c.SwaggerDoc("v1", new OpenApiInfo
+				{
+					Title = "Your API Title",
+					Version = "v1",
+					Description = "Your API Description"
+				});
+			});
+			services.AddControllers();
+			var connectionString = Configuration.GetConnectionString("DefaultConnection");
+			// var connectionString = Configuration.GetConnectionString("DefaultConnection");
+			services.AddDbContext<NestleDbContext>(options =>
+			 options.UseSqlServer(connectionString, sqlServerOptionsAction =>
+			 {
+				 // Configure other SQL Server options here if needed
+				 sqlServerOptionsAction.EnableRetryOnFailure(
+					 maxRetryCount: 5, // Maximum number of retries
+					 maxRetryDelay: TimeSpan.FromSeconds(30), // Maximum delay between retries
+					 errorNumbersToAdd: null // Error numbers to consider for retry (null means all errors)
+				 );
+			 }));
+			// options.UseSqlServer(
 
-            services.AddControllers();
-
-            // var connectionString = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<NestleDbContext>(options => options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
-            //services.AddSwaggerGen(c =>
-            //{
-            //c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
-            //});
-        }
+			// Configuration.GetConnectionString("DefaultConnection")));
+			//services.AddSwaggerGen(c =>
+			//{
+			//c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
+			//});
+		}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -50,7 +69,16 @@ namespace WebApi
                 //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApi v1"));
             }
 
-            app.UseHttpsRedirection();
+			app.UseSwagger();
+
+			// Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+			// specifying the Swagger JSON endpoint.
+			app.UseSwaggerUI(c =>
+			{
+				c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API Title");
+			});
+
+			app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -61,5 +89,7 @@ namespace WebApi
                 endpoints.MapControllers();
             });
         }
-    }
+	
+	
+	}
 }

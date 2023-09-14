@@ -26,7 +26,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var users = _nestleDbContext.tblUsers.ToList();
+                var users = _nestleDbContext.Users.ToList();
                 if (users.Count == 0)
                     return StatusCode(404, "No user found!");
 
@@ -41,7 +41,7 @@ namespace WebApi.Controllers
         [HttpPost("CreateUser")]
         public IActionResult Create([FromBody] User user)
         {
-            tblUsers usert = new tblUsers();
+            Users usert = new Users();
             usert.UserName = user.UserName;
             usert.FirstName = user.FirstName;
             usert.LastName = user.LastName;
@@ -51,7 +51,7 @@ namespace WebApi.Controllers
 
             try
             {
-                _nestleDbContext.tblUsers.Add(usert);
+                _nestleDbContext.Users.Add(usert);
                 _nestleDbContext.SaveChanges();
             }
             catch (Exception e)
@@ -60,7 +60,7 @@ namespace WebApi.Controllers
                 return StatusCode(500, e.Message);
             }
             // get all users
-            var users = _nestleDbContext.tblUsers.ToList();
+            var users = _nestleDbContext.Users.ToList();
             return Ok(users);
         }
 
@@ -69,7 +69,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var usert = _nestleDbContext.tblUsers.FirstOrDefault(x => x.Id == request.Id);
+                var usert = _nestleDbContext.Users.FirstOrDefault(x => x.Id == request.Id);
                 if (usert == null)
                     return StatusCode(404, "User NOT Found!");
 
@@ -90,7 +90,7 @@ namespace WebApi.Controllers
             }
 
             // get all users
-            var users = _nestleDbContext.tblUsers.ToList();
+            var users = _nestleDbContext.Users.ToList();
             return Ok(users);
         }
 
@@ -99,7 +99,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var usert = _nestleDbContext.tblUsers.FirstOrDefault(x => x.Id == id);
+                var usert = _nestleDbContext.Users.FirstOrDefault(x => x.Id == id);
                 if (usert == null)
                     return StatusCode(404, "User NOT Found!");
 
@@ -112,7 +112,7 @@ namespace WebApi.Controllers
                 return StatusCode(500, e.Message); ;
             }
             // get all users
-            var users = _nestleDbContext.tblUsers.ToList();
+            var users = _nestleDbContext.Users.ToList();
             return Ok(users);
         }
     }

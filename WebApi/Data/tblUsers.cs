@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebApi.Data
 {
-    public class tblUsers
+    public class Users
     {
         [Key]
         public int Id { get; set; }

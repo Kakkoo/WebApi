@@ -14,6 +14,6 @@ namespace WebApi.Data
 
         }
 
-        public DbSet<tblUsers> tblUsers { get; set; }
+        public DbSet<Users> Users { get; set; }
     }
 }
